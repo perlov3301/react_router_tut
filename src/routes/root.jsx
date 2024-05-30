@@ -7,6 +7,7 @@ import { Outlet,
          useNavigation,
  } from "react-router-dom";
 import { getContacts, createContact } from "../contacts.js";
+import { useEffect } from "react";
 //react router sends from <Form> request to a route 'action' and after ward
 //revalidates the data="useState"+"onSubmit"+"useEffect" are up to date
 export async function action() {
@@ -22,12 +23,16 @@ export async function loader({ request }) {
 // 'q' is 'name' within <input> => '?q=' within URL
   const q = url.searchParams.get("q");
   const contacts = await getContacts(q);
-  return { contacts };
+  return { contacts, q };
 }
 
 export default function Root() {
-    const { contacts } = useLoaderData();// default is to bring data
+    const { contacts, q } = useLoaderData();// default is to bring data
     const navigation = useNavigation();
+    useEffect(() => {
+      document.getElementById("q").value = q;
+    }, [q]);
+
     return (
        <>
           <div id="sidebar">
@@ -43,6 +48,7 @@ export default function Root() {
                       placeholder="Search"
                       type="search"
                       name="q"
+                      defaultValue={q}
                     />
                     <div id="search-spinner" aria-hidden hidden={true} />
                     <div className="sr-only" aria-live="polite"></div>
