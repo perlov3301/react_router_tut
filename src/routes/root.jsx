@@ -14,8 +14,14 @@ export async function action() {
   // return {contact};
   return redirect(`/contacts/${contact.id}/edit`);
 }
-export async function loader() {
-  const contacts = await getContacts();
+
+export async function loader({ request }) {
+// filter the list if there are URLSearchParams
+// this is not post, so the filter is here
+  const url = new URL(request.url);
+// 'q' is 'name' within <input> => '?q=' within URL
+  const q = url.searchParams.get("q");
+  const contacts = await getContacts(q);
   return { contacts };
 }
 
@@ -30,7 +36,7 @@ export default function Root() {
           {/* default method of form is 'get' => form data will
               be put into 'URLSearchParams' of a GET request
           */}
-                <form id="search-form" role="search">
+                <Form id="search-form" role="search">
   {/*browser serializes form by the 'name' of <input>=>'?q=' in url */}
                     <input id="q"
                       aria-label="Search contacts"
@@ -38,11 +44,9 @@ export default function Root() {
                       type="search"
                       name="q"
                     />
-                    <div id="search-spinner" aria-hidden
-                      hidden={true}
-                    />
+                    <div id="search-spinner" aria-hidden hidden={true} />
                     <div className="sr-only" aria-live="polite"></div>
-                </form>
+                </Form>
                 <Form method="post" >
                     <button type="submit">New</button>
                 </Form>
