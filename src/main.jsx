@@ -11,8 +11,9 @@ import Root, {
 import ErrorPage from "./error-page";
 import Contact, 
   { loader as contactLoader } from './routes/contact';
-import EditContact, 
-{ action as editAction} from './routes/edit.jsx';
+import EditContact, { action as editAction} from './routes/edit.jsx';
+import { action as destroyAction } from './routes/destroy.jsx';
+import Index from './routes/index.jsx';
 /**
  import {
   createBrowserRouter,
@@ -58,6 +59,17 @@ const router = createBrowserRouter([
         element: <EditContact />,
         loader: contactLoader,
         action: editAction,
+      },
+      {
+        path: "contacts/:contactId/destroy",
+        action: destroyAction,
+        errorElement: <div style={{textAlign:'center'}}>
+          There was an error</div>,
+      },
+      { //"index:true" has given an error 'null page'
+        // index: true,
+        path: "",
+        element: <Index />,
       },
     ],
   },

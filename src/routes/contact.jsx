@@ -58,7 +58,9 @@ export default function Contact() {
               </Form>
               <Form 
                 method="post"
-                action="destroy"
+    //action matches the route at "contacts/:contactId/destroy"
+    //as consequence Form sends this action to this route
+                action="destroy" 
                 onSubmit={(event) => {
                     if (
                         !confirm("please confirm deleting of record")

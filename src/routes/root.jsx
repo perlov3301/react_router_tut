@@ -4,6 +4,7 @@ import { Outlet,
          useLoaderData,
          Form,
          redirect,
+         useNavigation,
  } from "react-router-dom";
 import { getContacts, createContact } from "../contacts.js";
 //react router sends from <Form> request to a route 'action' and after ward
@@ -20,25 +21,27 @@ export async function loader() {
 
 export default function Root() {
     const { contacts } = useLoaderData();// default is to bring data
+    const navigation = useNavigation();
     return (
        <>
           <div id="sidebar">
             <h1>(React Router) Contacts</h1>
             <div>
+          {/* default method of form is 'get' => form data will
+              be put into 'URLSearchParams' of a GET request
+          */}
                 <form id="search-form" role="search">
+  {/*browser serializes form by the 'name' of <input>=>'?q=' in url */}
                     <input id="q"
                       aria-label="Search contacts"
                       placeholder="Search"
                       type="search"
                       name="q"
                     />
-                    <div id="search-spinner"
-                      aria-hidden
+                    <div id="search-spinner" aria-hidden
                       hidden={true}
                     />
-                    <div className="sr-only"
-                         aria-live="polite"
-                    ></div>
+                    <div className="sr-only" aria-live="polite"></div>
                 </form>
                 <Form method="post" >
                     <button type="submit">New</button>
@@ -73,7 +76,12 @@ export default function Root() {
               }  
             </nav>
           </div>
-          <div id="detail">
+          <div 
+            id="detail"
+            className={
+              navigation.state === "loading" ? "loading" : ""
+            }
+          >
             <Outlet />
           </div>
        </>
