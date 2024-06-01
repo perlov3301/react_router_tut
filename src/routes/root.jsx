@@ -1,10 +1,11 @@
 import { Outlet, 
-         Link, 
+        //  Link, 
          NavLink,
          useLoaderData,
          Form,
          redirect,
          useNavigation,
+         useSubmit,
  } from "react-router-dom";
 import { getContacts, createContact } from "../contacts.js";
 import { useEffect } from "react";
@@ -29,7 +30,15 @@ export async function loader({ request }) {
 export default function Root() {
     const { contacts, q } = useLoaderData();// default is to bring data
     const navigation = useNavigation();
+    const asubmit = useSubmit();
+
+// add spinner
+    const searching = 
+      navigation.location && 
+      new URLSearchParams(navigation.location.search).has("q");
+//filtering happen on every stroke
     useEffect(() => {
+  // when we refresh page after searching we still have  searched values
       document.getElementById("q").value = q;
     }, [q]);
 
@@ -49,6 +58,10 @@ export default function Root() {
                       type="search"
                       name="q"
                       defaultValue={q}
+                      onChange={(event)=>{
+        // console.log(`rootjsx;submit.currentTarget:${event.currentTarget.form}`);
+                        asubmit(event.currentTarget.form);
+                      }}
                     />
                     <div id="search-spinner" aria-hidden hidden={true} />
                     <div className="sr-only" aria-live="polite"></div>
