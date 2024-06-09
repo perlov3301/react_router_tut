@@ -1,6 +1,16 @@
-import { Form, useLoaderData } from "react-router-dom";
-import { getContact } from "../contacts";
+import { Form,
+         useLoaderData,
+         useFetcher, 
+} from "react-router-dom";
+import { getContact, updateContact } from "../contacts";
 import img1 from "../img1.png";
+
+export async function action({ request, params }) {
+  let aformData = await request.formData();
+  return updateContact(params.contactId, {
+    favorite: aformData.get("favorite") === "true",
+  });
+}
 
 export async function loader({ params }) {
   const contact = await getContact(params.contactId);
@@ -77,10 +87,18 @@ export default function Contact() {
 }
 
 function Favorite({ contact }) {
+//interacts with routes and actions 
+// without navigations
+    const afetcher = useFetcher();
     //yes, this is a 'let' for later
     let favorite = contact.favorite;
-    return (
-      <Form method="post">
+// Optimistic UI
+    if (afetcher.formData) { 
+      favorite =  
+      afetcher.formData.get("favorite") === "true";
+    }
+    return ( //cause of method 'post' form will call action
+      <afetcher.Form method="post">
         <button
           name="favorite"
           value={favorite ? "false" : "true"}
@@ -91,6 +109,6 @@ function Favorite({ contact }) {
         >
           {favorite ?   "★" : "☆"}
         </button>
-      </Form>
+      </afetcher.Form>
     );
 }

@@ -60,8 +60,12 @@ export default function Root() {
                       name="q"
                       defaultValue={q}
                       onChange={(event)=>{
+                        const isFirstSearch = q===null;
         // console.log(`rootjsx;submit.currentTarget:${event.currentTarget.form}`);
-                        asubmit(event.currentTarget.form);
+                        asubmit(event.currentTarget.form, {
+        // when we go back we will get new list
+                          replace: !isFirstSearch,
+                        });
                       }}
                     />
                     <div id="search-spinner" 
